@@ -1,3 +1,5 @@
+package skypro;
+
 import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -5,22 +7,20 @@ import java.io.PrintWriter;
 import javax.swing.JOptionPane;
 import java.util.*;
 import java.io.FileReader;
-import java.io.*;
 
-public class Main {
+public class skypro {
     public static void main(String[] args) {
         int intVariable = 1234567810;
         byte byteVariable = 12;
         short shortVariable = 12345;
         long longVariable = (long) (intVariable * Math.pow(10, 9));
-        long longVariable2 = 1234567891113151719L;
         float aFloat = 18.34f;
         float bFloat = 0.062f;
-        float floatVariable = (float) (aFloat / bFloat); // Explicit type casting
+        float floatVariable = aFloat / bFloat; // Explicit type casting
         Random rand = new Random();
         double doubleVariable = rand.nextDouble() * 1.7976931348623157E305 / 4.653419E-4;
-        if (+Double.MAX_VALUE < doubleVariable) {
-            doubleVariable = +Double.MAX_VALUE;
+        if (Double.MAX_VALUE < doubleVariable) {
+            doubleVariable = Double.MAX_VALUE;
             System.out.println("doubleVariable = MAX_VALUE");
         } else if (doubleVariable < Double.MIN_VALUE) {
             doubleVariable = Double.MIN_VALUE;
@@ -41,7 +41,7 @@ public class Main {
         );
 
         System.out.println("Execute exercise number 1");
-// add variables to .txt
+        // add variables to .txt
         String fileName = "data.txt"; // File name to save the data
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName, true))) {
             while (true) {
@@ -61,7 +61,8 @@ public class Main {
                         null, // Icon
                         options, // Custom buttons
                         options // Initial value
-                );  // Handle the user's selection
+                );
+                // Handle the user's selection
                 if (selected == 0) {
                     System.out.println("Выбрано 'Продолжить'");
                 } else if (selected == 1) {
@@ -76,7 +77,7 @@ public class Main {
             System.err.println("An error occurred: " + e.getMessage());
         }
         //Массив из файла txt
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String str;
             while ((str = reader.readLine()) != null) {
@@ -88,48 +89,75 @@ public class Main {
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());
         }
-
+        // вывод чисел
         String[] stringArr = list.toArray(new String[0]);
-        // Проверка тип переменных
-        double[] doubleArr = Arrays.stream(stringArr)
-                .mapToDouble(s -> {
-                    try {
-                        return Double.parseDouble(s);
-                    } catch (NumberFormatException e) {
-                        char anyElement = s.charAt(1);
-                        System.out.println("Значение '" + s + "' не является числом. Тип: " + anyElement);
-                        return Double.NaN; // Используем NaN для элементов, которые не могут быть преобразованы
-                    }
-                })
-                .toArray();
-        for (double value : doubleArr) {
-            if (!Double.isNaN(value)) {
-                System.out.println("Значение double: " + value);
-            } else {
-                System.out.println("Некорректное значение, пропущено.");
+        // Типы переменных в массиве
+        ArrayList<Long> longNumbers = new ArrayList<>();
+        ArrayList<Double> doubleNumbers = new ArrayList<>();
+
+        for (String num : stringArr) {
+            System.out.println("До обработки: " + num);
+            String cleanedNum = num.replace(" ", "").replace(",", ".");
+            try {
+                long longValue = Long.parseLong(cleanedNum);
+                longNumbers.add(longValue);
+                System.out.println("Целое число, с типом , с типом long, равно: " + longValue);
+            } catch (NumberFormatException e) {
+                try {
+                    double doubleValue = Double.parseDouble(cleanedNum);
+                    doubleNumbers.add(doubleValue);
+                    System.out.println("Число с плавающей точкой, с типом double, равно: " + doubleValue);
+                } catch (NumberFormatException e2) {
+                    System.out.println("Значение '" + num + "' не может быть преобразовано в число. Пропущено.");
+                }
             }
         }
+        System.out.println("Execute exercise number 2");
 
-        System.out.println(Arrays.toString(doubleArr));
+        int[] teachers = {23, 27, 30};
+        int sumStudents = Arrays.stream(teachers).sum();
+        int papers = 480;
+        int paperForStudent = papers / sumStudents;
+        System.out.println("На каждого ученика рассчитано " + paperForStudent + " листов бумаги");
 
+        System.out.println("Execute exercise number 3");
 
-//        boolean isStringArray2 = stringArr instanceof String[];
-//        if (isStringArray2) {
-//            for (int i = 0; i < stringArr.length; i++) {
-//                String element = stringArr[i];
-//                System.out.println("Element " + (i + 1) + ": " + element);
-//
-//                try {
-//                    double doubleElement = Double.parseDouble(element);
-//                    System.out.println("Double element " + (i + 1) + ": " + doubleElement);
-//                } catch (NumberFormatException e) {
-//                    System.out.println("Element " + (i + 1) + " cannot be converted to double");
-//                    char anyElement = element.charAt(1);
-//                    System.out.println("Char element " + (i + 1) + ": " + anyElement);
-//                }
-//                }
-//            }
+        int num = 20;
+        int productionPer2Minutes = 16;
+        long productionPerHour = productionPer2Minutes * 30;
+        System.out.println("For " + num + " minutes, the machine will produce: " + (productionPerHour * num / 60) + " units");
+        System.out.println("In a day, the machine will produce: " + productionPerHour * 24 + " units");
+        System.out.println("In 3 days, the machine will produce: " + (productionPerHour * 72) + " units");
+        System.out.println("In a month (30 days), the machine will produce: " + ((productionPerHour * 24) * 30) + " units");
+
+        System.out.println("Execute exercise number 4");
+
+        short maxCup = 120;
+        byte maxC = 4;
+        byte maxW = 2;
+        int maxCupForClass = maxW + maxC;
+        int maxClass = maxCup / maxCupForClass;
+        int needWhitePaint = maxW * maxClass;
+        int needBrownPaint = maxC * maxClass;
+
+        System.out.println("In a school with " + maxClass + " classes, you need " + needWhitePaint + " cans of white paint and " + needBrownPaint + " cans of brown paint");
+
+        System.out.println("Execute exercise number 5");
+
+        int[] eatVolume = {80, 105, 100, 700};
+        int[] eatEtem = {5, 2, 2, 1};
+        int[] result = new int[eatVolume.length];
+
+        for (int i = 0; i < eatVolume.length; i++) {
+            result[i] = eatVolume[i] * eatEtem[i];
+            System.out.println("Результат для элемента " + i + ": " + result[i]);
+        }
+
+        int gramm = Arrays.stream(result).sum();
+        double kilo = (double) Math.floorDiv(gramm, 1000) + (double) Math.floorMod(gramm, 1000) / 1000;
+
+        System.out.println("Вес в килограммах: " + kilo + "\nВес в граммах: " + gramm);
+
+        System.out.println("Execute exercise number 6");
     }
-
-
 }
