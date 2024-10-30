@@ -10,7 +10,7 @@ import java.io.FileReader;
 
 public class Main {
     public static void main(String[] args) {
-        int intVariable = 1234567810;
+        int intVariable = 123456781;
         byte byteVariable = 12;
         short shortVariable = 12345;
         long longVariable = (long) (intVariable * Math.pow(10, 9));
@@ -162,5 +162,27 @@ public class Main {
         System.out.println("Вес в килограммах: " + kilo + "\nВес в граммах: " + gram);
 
         System.out.println("Execute exercise number 6");
+
+        byte experience = 3;
+        int[] salary = {67760, 83690, 76230};
+        double[] upSalaries = new double[salary.length];
+        int[] annualDifference = new int[salary.length];
+//        double upSalary = (double) Math.multiplyExact(salary, 110) + (double) Math.floorDiv(salary, 100) + (double) Math.floorMod(salary, 100) / 100;
+        for (int i = 0; i < salary.length; i++) {
+            upSalaries[i]= (double) Math.multiplyExact(salary[i], 110) / 100;
+            System.out.println("Up salary for " + i + ": " + upSalaries[i]);
+
+            // Расчет годового дохода до и после повышения
+            int annualCurrent = salary[i] * 12;
+            int annualIncreased = (int) (upSalaries[i] * 12);
+
+            // Разница между годовым доходом после повышения и текущим годовым доходом
+            annualDifference[i] = annualIncreased - annualCurrent;
+            System.out.println("Annual difference for employee " + i + ": " + annualDifference[i]);
+        }
+        System.out.println("Маша теперь получает " + upSalaries[0] + " рублей. Годовой доход вырос на " + annualDifference[0] + " рублей.");
+        System.out.println("Денис теперь получает " + upSalaries[1] + " рублей. Годовой доход вырос на " + annualDifference[1] + " рублей.");
+        System.out.println("Кристина теперь получает " + upSalaries[2] + " рублей. Годовой доход вырос на " + annualDifference[2] + " рублей.");
+        System.out.println("Execute exercise number 7");
     }
 }
