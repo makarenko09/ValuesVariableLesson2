@@ -89,31 +89,71 @@ public class Main {
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());
         }
-        // вывод чисел
+        // вывод чисел в массив строк
         String[] stringArr = list.toArray(new String[0]);
-        // Типы переменных в массиве
+//        мы создали новый массив строк и поместили в него содержимое списка list.
         ArrayList<Long> longNumbers = new ArrayList<>();
         ArrayList<Double> doubleNumbers = new ArrayList<>();
+        ArrayList<Float> floatNumbers = new ArrayList<>();
+        ArrayList<Short> shortNumbers = new ArrayList<>();
+        ArrayList<Integer> intNumbers = new ArrayList<>();
+        ArrayList<Byte> byteNumbers = new ArrayList<>();
+        ArrayList<String> errorValues = new ArrayList<>();
 
         for (String num : stringArr) {
             System.out.println("До обработки: " + num);
-            String cleanedNum = num.replace(" ", "").replace(",", ".");
+//            String num = num.replace("", ""); // Удаляем только пробелы
             try {
-                long longValue = Long.parseLong(cleanedNum);
-                longNumbers.add(longValue);
-                System.out.println("Целое число, с типом , с типом long, равно: " + longValue);
+                // Проверяем на наличие суффиксов 'L' и 'f'
+                if (num.endsWith("L")) {
+                    // Убираем суффикс и парсим как long
+                    long longValue = Long.parseLong(num.substring(0, num.length() - 1));
+                    longNumbers.add(longValue);
+                    System.out.println("Число типа long: " + longValue + "L");
+                } else if (num.endsWith("f")) {
+                    float floatValue = Float.parseFloat(num.substring(0, num.length() - 1));
+                    floatNumbers.add(floatValue);
+                    System.out.println("Число типа float: " + floatValue + "f");
+                } else {
+                    var parsedLong = Long.parseLong(num);
+                    if (parsedLong >= Byte.MIN_VALUE && parsedLong <= Byte.MAX_VALUE) {
+                        byteNumbers.add((byte) parsedLong);
+                        System.out.println("Число типа byte: " + parsedLong);
+                    }
+                    if (parsedLong >= Short.MIN_VALUE && parsedLong <= Short.MAX_VALUE) {
+                        shortNumbers.add((short) parsedLong);
+                        System.out.println("Число типа short: " + parsedLong);
+                    }
+                    if (parsedLong >= Integer.MIN_VALUE && parsedLong <= Integer.MAX_VALUE) {
+                        intNumbers.add((int) parsedLong);
+                        System.out.println("Число типа int: " + parsedLong);
+                    }
+                    longNumbers.add(parsedLong);
+                    System.out.println("Число типа long: " + num + "L");
+                }
             } catch (NumberFormatException e) {
                 try {
-                    double doubleValue = Double.parseDouble(cleanedNum);
-                    doubleNumbers.add(doubleValue);
-                    System.out.println("Число с плавающей точкой, с типом double, равно: " + doubleValue);
+                    var parsedDouble = Double.parseDouble(num);
+                    if (parsedDouble >= -Double.MAX_VALUE && parsedDouble <= Double.MAX_VALUE) {
+                        doubleNumbers.add(parsedDouble);
+                        System.out.println("Число типа double: " + parsedDouble);
+                    }
                 } catch (NumberFormatException e2) {
-                    System.out.println("Значение '" + num + "' не может быть преобразовано в число. Пропущено.");
+                    // Добавляем некорректное значение в список ошибок
+                    errorValues.add(num);
+                    System.out.println("Значение '" + num + "' не может быть преобразовано в число.");
                 }
             }
         }
-        System.out.println("Double numbers: " + doubleNumbers);
+        // Выводим результаты
+        System.out.println("Byte numbers: " + byteNumbers);
+        System.out.println("Short numbers: " + shortNumbers);
+        System.out.println("Int numbers: " + intNumbers);
         System.out.println("Long numbers: " + longNumbers);
+        System.out.println("Float numbers: " + floatNumbers);
+        System.out.println("Double numbers: " + doubleNumbers);
+        // Выводим ошибки
+        System.out.println("Не удалось преобразовать следующие значения: " + errorValues);
 
         System.out.println("Execute exercise number 2");
 
@@ -128,10 +168,24 @@ public class Main {
         int num = 20;
         int productionPer2Minutes = 16;
         long productionPerHour = productionPer2Minutes * 30;
-        System.out.println("For " + num + " minutes, the machine will produce: " + (productionPerHour * num / 60) + " units");
+
+        System.out.println("For " + num + " minutes, the machine will produce: " + (productionPerHour * num / 2) + " units");
         System.out.println("In a day, the machine will produce: " + productionPerHour * 24 + " units");
         System.out.println("In 3 days, the machine will produce: " + (productionPerHour * 72) + " units");
-        System.out.println("In a month (30 days), the machine will produce: " + ((productionPerHour * 24) * 30) + " units");
+
+        Calendar calendar = Calendar.getInstance();
+        Date date = new Date();
+        calendar.setTime(date);
+        int month = calendar.get(Calendar.MONTH);
+        // Adjust for 0-based index
+        int adjustedMonth = month + 1;
+        System.out.println("Current Month: " + adjustedMonth);
+        // Get the number of days in the current month
+        int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        System.out.println("Number of days in the current month: " + daysInMonth);
+        // Calculate production for the entire month
+        long productionPerMonth = (productionPerHour * 24) * daysInMonth;
+        System.out.println("In a month (" + daysInMonth + " days), the machine will produce: " + productionPerMonth + " units");
 
         System.out.println("Execute exercise number 4");
 
@@ -163,6 +217,21 @@ public class Main {
 
         System.out.println("Execute exercise number 6");
 
+        int totalWeightToLose = 7 * 1000; // кг в г
+        int weightLossPerDayMin = 250; // г
+        int weightLossPerDayMax = 500; // г
+        // Расчет дней для минимальной и максимальной потери веса
+        int daysMin = (totalWeightToLose + weightLossPerDayMin - 1) / weightLossPerDayMin;
+        int daysMax = (totalWeightToLose + weightLossPerDayMax - 1) / weightLossPerDayMax;
+        // Calculate the average number of days
+        double averageDays = (daysMin + daysMax) / 2.0;
+        // Output the results
+        System.out.println("При потере 250 грамм в день потребуется " + daysMin + " дней.");
+        System.out.println("При потере 500 грамм в день потребуется " + daysMax + " дней.");
+        System.out.println("В среднем может потребоваться " + averageDays + " дней.");
+
+        System.out.println("Execute exercise number 7");
+
         byte experience = 3;
         int[] salary = {67760, 83690, 76230};
         double[] upSalaries = new double[salary.length];
@@ -183,6 +252,6 @@ public class Main {
         System.out.println("Маша теперь получает " + upSalaries[0] + " рублей. Годовой доход вырос на " + annualDifference[0] + " рублей.");
         System.out.println("Денис теперь получает " + upSalaries[1] + " рублей. Годовой доход вырос на " + annualDifference[1] + " рублей.");
         System.out.println("Кристина теперь получает " + upSalaries[2] + " рублей. Годовой доход вырос на " + annualDifference[2] + " рублей.");
-        System.out.println("Execute exercise number 7");
+        System.out.println("Execute exercise number 8");
     }
 }
