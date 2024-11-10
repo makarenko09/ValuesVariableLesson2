@@ -1,12 +1,13 @@
 package skypro;
 
-import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import javax.swing.JOptionPane;
-import java.util.*;
-import java.io.FileReader;
+import javax.swing.*;
+import java.io.*;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,7 +19,7 @@ public class Main {
         float bFloat = 0.062f;
         float floatVariable = aFloat / bFloat; // Explicit type casting
         Random rand = new Random();
-        double doubleVariable = rand.nextDouble() * 1.7976931348623157E305 / 4.653419E-4;
+        double doubleVariable = (double) rand.nextDouble() * 1.7976931348623157E305 / 4.653419E-4;
         if (Double.MAX_VALUE < doubleVariable) {
             doubleVariable = Double.MAX_VALUE;
             System.out.println("doubleVariable = MAX_VALUE");
@@ -36,6 +37,7 @@ public class Main {
                         "Значение переменной longVariable, с типом long, равно " + longVariable + "\n" +
                         "Значение переменной floatVariable, с типом float, равно " + floatVariable + "\n" +
                         "Значение переменной doubleVariable, с типом double, равно " + doubleVariable + "\n" +
+                        "Значение переменной MaxDoubleValue, с типом double, равно " + Double.MAX_VALUE + "\n" +
                         "Значение переменной charVariable, с типом char, равно " + charVariable + "\n" +
                         "Значение переменной booleanVariable, с типом boolean, равно " + booleanVariable
         );
@@ -44,34 +46,33 @@ public class Main {
         // add variables to .txt
         String fileName = "data.txt"; // File name to save the data
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName, true))) {
-            while (true) {
+            Object[] options = {"Продолжить", "Закончить"};  // Show the dialog // Show the dialog
+            int selected = JOptionPane.showOptionDialog(
+                    null, // Parent component
+                    "Выберите один из вариантов:", // Message
+                    "Выбор", // Title
+                    JOptionPane.DEFAULT_OPTION, // Option type (no predefined option type)
+                    JOptionPane.QUESTION_MESSAGE, // Message type
+                    null, // Icon
+                    options, // Custom buttons
+                    options // Initial value
+            );
+            while (selected != 0) {
+                // Handle the user's selection
+                if (selected == 0) {
+                    System.out.println("Выбрано 'Продолжить'");
+                } else if (selected == 1) {
+                    System.out.println("Выбрано 'Закончить'");
+                } else if (selected == JOptionPane.CLOSED_OPTION) {
+                    System.out.println("Окно было закрыто без выбора");
+                }
                 String text = JOptionPane.showInputDialog(null, "Введите сообщение:");
                 System.out.println("Получено сообщение : " + text);
                 if (text != null) { // Check if text is not null
                     writer.println(text);
                 }
 
-                Object[] options = {"Продолжить", "Закончить"};  // Show the dialog // Show the dialog
-                int selected = JOptionPane.showOptionDialog(
-                        null, // Parent component
-                        "Выберите один из вариантов:", // Message
-                        "Выбор", // Title
-                        JOptionPane.DEFAULT_OPTION, // Option type (no predefined option type)
-                        JOptionPane.QUESTION_MESSAGE, // Message type
-                        null, // Icon
-                        options, // Custom buttons
-                        options // Initial value
-                );
-                // Handle the user's selection
-                if (selected == 0) {
-                    System.out.println("Выбрано 'Продолжить'");
-                } else if (selected == 1) {
-                    System.out.println("Выбрано 'Закончить'");
-                    break;
-                } else if (selected == JOptionPane.CLOSED_OPTION) {
-                    System.out.println("Окно было закрыто без выбора");
-                    break;
-                }
+
             }
         } catch (IOException e) {
             System.err.println("An error occurred: " + e.getMessage());
@@ -92,13 +93,13 @@ public class Main {
         // вывод чисел в массив строк
         String[] stringArr = list.toArray(new String[0]);
 //        мы создали новый массив строк и поместили в него содержимое списка list.
-        ArrayList<Long> longNumbers = new ArrayList<>();
-        ArrayList<Double> doubleNumbers = new ArrayList<>();
-        ArrayList<Float> floatNumbers = new ArrayList<>();
-        ArrayList<Short> shortNumbers = new ArrayList<>();
-        ArrayList<Integer> intNumbers = new ArrayList<>();
-        ArrayList<Byte> byteNumbers = new ArrayList<>();
-        ArrayList<String> errorValues = new ArrayList<>();
+        List<Long> longNumbers = new ArrayList<>();
+        List<Double> doubleNumbers = new ArrayList<>();
+        List<Float> floatNumbers = new ArrayList<>();
+        List<Short> shortNumbers = new ArrayList<>();
+        List<Integer> intNumbers = new ArrayList<>();
+        List<Byte> byteNumbers = new ArrayList<>();
+        List<String> errorValues = new ArrayList<>();
 
         for (String num : stringArr) {
             System.out.println("До обработки: " + num);
@@ -114,24 +115,25 @@ public class Main {
                     float floatValue = Float.parseFloat(num.substring(0, num.length() - 1));
                     floatNumbers.add(floatValue);
                     System.out.println("Число типа float: " + floatValue + "f");
-                } else {
-                    var parsedLong = Long.parseLong(num);
-                    if (parsedLong >= Byte.MIN_VALUE && parsedLong <= Byte.MAX_VALUE) {
-                        byteNumbers.add((byte) parsedLong);
-                        System.out.println("Число типа byte: " + parsedLong);
-                    }
-                    if (parsedLong >= Short.MIN_VALUE && parsedLong <= Short.MAX_VALUE) {
-                        shortNumbers.add((short) parsedLong);
-                        System.out.println("Число типа short: " + parsedLong);
-                    }
-                    if (parsedLong >= Integer.MIN_VALUE && parsedLong <= Integer.MAX_VALUE) {
-                        intNumbers.add((int) parsedLong);
-                        System.out.println("Число типа int: " + parsedLong);
-                    }
-                    longNumbers.add(parsedLong);
-                    System.out.println("Число типа long: " + num + "L");
                 }
             } catch (NumberFormatException e) {
+                long parsedLong = Long.parseLong(num);
+                if (parsedLong >= Byte.MIN_VALUE && parsedLong <= Byte.MAX_VALUE) {
+                    byteNumbers.add((byte) parsedLong);
+                    System.out.println("Число типа byte: " + parsedLong);
+                }
+                if (parsedLong >= Short.MIN_VALUE && parsedLong <= Short.MAX_VALUE) {
+                    shortNumbers.add((short) parsedLong);
+                    System.out.println("Число типа short: " + parsedLong);
+                }
+                if (parsedLong >= Integer.MIN_VALUE && parsedLong <= Integer.MAX_VALUE) {
+                    intNumbers.add((int) parsedLong);
+                    System.out.println("Число типа int: " + parsedLong);
+                }
+                longNumbers.add(parsedLong);
+                System.out.println("Число типа long: " + num + "L");
+
+
                 try {
                     var parsedDouble = Double.parseDouble(num);
                     if (parsedDouble >= -Double.MAX_VALUE && parsedDouble <= Double.MAX_VALUE) {
@@ -168,20 +170,19 @@ public class Main {
         int num = 20;
         int productionPer2Minutes = 16;
         long productionPerHour = productionPer2Minutes * 30;
+        int unitsIntTwentyMinutes = (int) (productionPerHour * num / 2);
+        int unitsInOneDay = (int) (productionPerHour * 24);
+        int unitsInThreeDay = (int) (productionPerHour * 72);
+        System.out.println("For " + num + " minutes, the machine will produce: " + unitsIntTwentyMinutes + " units");
+        System.out.println("In a day, the machine will produce: " + unitsInOneDay + " units");
+        System.out.println("In 3 days, the machine will produce: " + unitsInThreeDay + " units");
 
-        System.out.println("For " + num + " minutes, the machine will produce: " + (productionPerHour * num / 2) + " units");
-        System.out.println("In a day, the machine will produce: " + productionPerHour * 24 + " units");
-        System.out.println("In 3 days, the machine will produce: " + (productionPerHour * 72) + " units");
-
-        Calendar calendar = Calendar.getInstance();
-        Date date = new Date();
-        calendar.setTime(date);
-        int month = calendar.get(Calendar.MONTH);
-        // Adjust for 0-based index
-        int adjustedMonth = month + 1;
-        System.out.println("Current Month: " + adjustedMonth);
-        // Get the number of days in the current month
-        int daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue(); // Месяц от 1 до 12
+        System.out.println("Current Month: " + currentMonth);
+        // Получаем количество дней в текущем месяце
+        YearMonth yearMonth = YearMonth.of(currentDate.getYear(), currentMonth);
+        int daysInMonth = yearMonth.lengthOfMonth();
         System.out.println("Number of days in the current month: " + daysInMonth);
         // Calculate production for the entire month
         long productionPerMonth = (productionPerHour * 24) * daysInMonth;
